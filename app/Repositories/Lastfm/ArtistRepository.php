@@ -3,6 +3,7 @@
 namespace App\Repositories\Lastfm;
 
 use App\Models\Artist;
+use Illuminate\Support\Arr;
 
 class ArtistRepository
 {
@@ -13,7 +14,7 @@ class ArtistRepository
             'name' => $attributes['name'],
         ]);
 
-        if (isset($attributes['mbid']) && $attributes['mbid'] != '') {
+        if (Arr::has($attributes, 'mbid') && $attributes['mbid'] != '') {
             $artist->mbid = $attributes['mbid'];
         }
 

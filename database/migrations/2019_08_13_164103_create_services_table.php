@@ -16,8 +16,12 @@ class CreateServicesTable extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('provider_id');
+            $table->string('internal_id')->nullable();
             $table->morphs('model');
-            $table->string('web_url');
+            $table->string('name');
+            $table->string('web_url')->nullable();
+            $table->string('api_url')->nullable();
+            $table->timestamp('crawled_at')->nullable();
             $table->timestamps();
 
             $table->foreign('provider_id')

@@ -8,11 +8,12 @@ class ArtistRepository
 {
     public function create(array $attributes, array $overrides = [])
     {
+        /** @var Artist $artist */
         $artist = Artist::firstOrNew([
             'name' => $attributes['name'],
         ]);
 
-        if ($attributes['mbid'] && $attributes['mbid'] != '') {
+        if (isset($attributes['mbid']) && $attributes['mbid'] != '') {
             $artist->mbid = $attributes['mbid'];
         }
 

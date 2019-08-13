@@ -3,6 +3,7 @@
 namespace App\Jobs\Lastfm\Artist;
 
 use App\Http\Clients\Lastfm\LastfmClient;
+use App\Repositories\Lastfm\ArtistRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -30,9 +31,10 @@ class ProcessArtistSearch implements ShouldQueue
 
     /**
      * @param LastfmClient $client
+     * @param ArtistRepository $artistRepository
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function handle(LastfmClient $client)
+    public function handle(LastfmClient $client, ArtistRepository $artistRepository)
     {
         $page = 1;
 
@@ -47,8 +49,12 @@ class ProcessArtistSearch implements ShouldQueue
             dump("Page: {$page}");
 
             collect($results['results']['artistmatches']['artist'])
-                ->each(function($result) {
+                ->each(function($result) use ($artistRepository) {
+                    $artist = $artistRepository->create($result, [
+                        'listeners' => $result['listeners']
+                    ]);
 
+                    $artistRepository->addService($artist, $result);
                 });
 
             $page++;

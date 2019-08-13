@@ -6,6 +6,8 @@ use GuzzleHttp\Client;
 
 class LastfmClient
 {
+    const MAX_LIMIT = 1000;
+
     /**
      * @var Client
      */
@@ -34,22 +36,46 @@ class LastfmClient
         $this->apiKey = $apiKey;
     }
 
-    public function searchArtist(string $artistName)
+    public function artist()
+    {
+        return new Artist($this);
+    }
+
+    public function limit(int $limit)
+    {
+        if ($limit > self::MAX_LIMIT) {
+            $limit = self::MAX_LIMIT;
+        }
+
+        $this->query = array_merge($this->query, [
+            'limit' => $limit,
+        ]);
+
+        return $this;
+    }
+
+    public function page(int $limit)
     {
         $this->query = array_merge($this->query, [
-            'method' => 'artist.search',
-            'artist' => $artistName,
-            'limit' => 1000,
+            'limit' => $limit,
+        ]);
+
+        return $this;
+    }
+
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function get()
+    {
+        $this->query = array_merge($this->query, [
             'api_key' => $this->apiKey,
-            'page' => 1,
         ]);
 
         $response = $this->http->request('GET', '', [
             'query' => $this->query,
         ]);
 
-        $results = json_decode($response->getBody()->getContents(), true);
-
-        return $results['results']['artistmatches']['artist'];
+        return json_decode($response->getBody()->getContents(), true);
     }
 }

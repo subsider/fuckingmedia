@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\Lastfm\Artist;
 
-use App\Http\Clients\Lastfm\LastfmClient;
+use App\Jobs\Lastfm\Artist\ProcessArtistSearch;
 use Illuminate\Console\Command;
 
 class ArtistSearchCommand extends Command
@@ -20,20 +20,14 @@ class ArtistSearchCommand extends Command
      * @var string
      */
     protected $description = 'Command description';
-    /**
-     * @var LastfmClient
-     */
-    private $client;
 
     /**
      * Create a new command instance.
      *
-     * @param LastfmClient $client
      */
-    public function __construct(LastfmClient $client)
+    public function __construct()
     {
         parent::__construct();
-        $this->client = $client;
     }
 
     /**
@@ -43,8 +37,6 @@ class ArtistSearchCommand extends Command
      */
     public function handle()
     {
-        $results = $this->client->searchArtist($this->argument('artist'));
-
-        dd($results);
+        ProcessArtistSearch::dispatch($this->argument('artist'));
     }
 }

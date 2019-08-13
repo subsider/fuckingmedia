@@ -6,20 +6,6 @@ use App\Models\Artist;
 
 class ArtistRepository
 {
-    /**
-     * @var Artist
-     */
-    private $artist;
-
-    /**
-     * ArtistRepository constructor.
-     * @param Artist $artist
-     */
-    public function __construct(Artist $artist)
-    {
-        $this->artist = $artist;
-    }
-
     public function create(array $attributes, array $overrides = [])
     {
         $artist = Artist::firstOrNew([

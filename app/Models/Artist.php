@@ -86,8 +86,19 @@ class Artist extends BaseModel
         return $this->morphMany(Service::class, 'model');
     }
 
+    public function bios(): MorphMany
+    {
+        return $this->morphMany(Bio::class, 'model');
+    }
+
     public function images(): MorphToMany
     {
         return $this->morphToMany(Image::class, 'imageable');
+    }
+
+    public function tags(): MorphToMany
+    {
+        return $this->morphToMany(Tag::class, 'taggable')
+            ->withPivot('url');
     }
 }

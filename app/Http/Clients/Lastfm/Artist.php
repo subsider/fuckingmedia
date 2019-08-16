@@ -27,4 +27,14 @@ class Artist
 
         return $this->client;
     }
+
+    public function info(string $artistName)
+    {
+        $this->client->query = array_merge($this->client->query, [
+            'method' => 'artist.getinfo',
+            'artist' => $artistName,
+        ]);
+
+        return $this->client;
+    }
 }

@@ -42,4 +42,9 @@ class Provider extends BaseModel
     {
         return $this->hasMany(Image::class);
     }
+
+    public function bios(): HasMany
+    {
+        return $this->hasMany(Bio::class);
+    }
 }

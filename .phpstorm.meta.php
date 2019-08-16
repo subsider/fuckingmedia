@@ -5,7 +5,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2019-08-13 17:44:31.
+    * Generated on 2019-08-16 10:06:07.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -13,6 +13,7 @@ namespace PHPSTORM_META {
     override(new \Illuminate\Contracts\Container\Container, map([
         '' => '@',
         'App\Http\Clients\Lastfm\LastfmClient' => \App\Http\Clients\Lastfm\LastfmClient::class,
+        'App\Repositories\Lastfm\ArtistRepository' => \App\Repositories\Lastfm\ArtistRepository::class,
         'Cviebrock\EloquentSluggable\SluggableObserver' => \Cviebrock\EloquentSluggable\SluggableObserver::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
@@ -157,6 +158,7 @@ namespace PHPSTORM_META {
     override(\Illuminate\Contracts\Container\Container::make(0), map([
         '' => '@',
         'App\Http\Clients\Lastfm\LastfmClient' => \App\Http\Clients\Lastfm\LastfmClient::class,
+        'App\Repositories\Lastfm\ArtistRepository' => \App\Repositories\Lastfm\ArtistRepository::class,
         'Cviebrock\EloquentSluggable\SluggableObserver' => \Cviebrock\EloquentSluggable\SluggableObserver::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
@@ -301,6 +303,7 @@ namespace PHPSTORM_META {
     override(\Illuminate\Contracts\Container\Container::makeWith(0), map([
         '' => '@',
         'App\Http\Clients\Lastfm\LastfmClient' => \App\Http\Clients\Lastfm\LastfmClient::class,
+        'App\Repositories\Lastfm\ArtistRepository' => \App\Repositories\Lastfm\ArtistRepository::class,
         'Cviebrock\EloquentSluggable\SluggableObserver' => \Cviebrock\EloquentSluggable\SluggableObserver::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
@@ -445,6 +448,7 @@ namespace PHPSTORM_META {
     override(\App::make(0), map([
         '' => '@',
         'App\Http\Clients\Lastfm\LastfmClient' => \App\Http\Clients\Lastfm\LastfmClient::class,
+        'App\Repositories\Lastfm\ArtistRepository' => \App\Repositories\Lastfm\ArtistRepository::class,
         'Cviebrock\EloquentSluggable\SluggableObserver' => \Cviebrock\EloquentSluggable\SluggableObserver::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
@@ -589,6 +593,7 @@ namespace PHPSTORM_META {
     override(\App::makeWith(0), map([
         '' => '@',
         'App\Http\Clients\Lastfm\LastfmClient' => \App\Http\Clients\Lastfm\LastfmClient::class,
+        'App\Repositories\Lastfm\ArtistRepository' => \App\Repositories\Lastfm\ArtistRepository::class,
         'Cviebrock\EloquentSluggable\SluggableObserver' => \Cviebrock\EloquentSluggable\SluggableObserver::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
@@ -733,6 +738,7 @@ namespace PHPSTORM_META {
     override(\app(0), map([
         '' => '@',
         'App\Http\Clients\Lastfm\LastfmClient' => \App\Http\Clients\Lastfm\LastfmClient::class,
+        'App\Repositories\Lastfm\ArtistRepository' => \App\Repositories\Lastfm\ArtistRepository::class,
         'Cviebrock\EloquentSluggable\SluggableObserver' => \Cviebrock\EloquentSluggable\SluggableObserver::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
@@ -877,6 +883,7 @@ namespace PHPSTORM_META {
     override(\resolve(0), map([
         '' => '@',
         'App\Http\Clients\Lastfm\LastfmClient' => \App\Http\Clients\Lastfm\LastfmClient::class,
+        'App\Repositories\Lastfm\ArtistRepository' => \App\Repositories\Lastfm\ArtistRepository::class,
         'Cviebrock\EloquentSluggable\SluggableObserver' => \Cviebrock\EloquentSluggable\SluggableObserver::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,

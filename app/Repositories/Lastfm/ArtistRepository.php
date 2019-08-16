@@ -3,11 +3,36 @@
 namespace App\Repositories\Lastfm;
 
 use App\Models\Artist;
+use App\Models\Provider;
 use App\Models\Service;
 use Illuminate\Support\Arr;
 
 class ArtistRepository
 {
+    /**
+     * @var array
+     */
+    public $sizes = [
+        'small' => 'icon',
+        'medium' => 'avatar',
+        'large' => 'thumb',
+        'extralarge' => 'cover',
+    ];
+
+    /**
+     * @var Provider
+     */
+    private $provider;
+
+    /**
+     * ArtistRepository constructor.
+     * @param Provider $provider
+     */
+    public function __construct(Provider $provider)
+    {
+        $this->provider = $provider;
+    }
+
     public function create(array $attributes, array $overrides = []): Artist
     {
         $artist = Artist::firstOrNew(['name' => $attributes['name']]);
@@ -17,7 +42,7 @@ class ArtistRepository
         }
 
         collect($overrides)->each(function ($override, $key) use ($artist) {
-            $artist->$key = ['lastfm' => (int) $override];
+            $artist->$key = ['lastfm' => (int)$override];
         });
 
         $artist->save();
@@ -29,7 +54,7 @@ class ArtistRepository
     {
         /** @var Service $service */
         $service = $artist->services()->firstOrNew([
-            'provider_id' => 1,
+            'provider_id' => $this->provider->id,
             'name' => $artist->name,
         ]);
 
@@ -41,5 +66,23 @@ class ArtistRepository
         $service->save();
 
         return $this;
+    }
+
+    public function addImages(Artist $artist, array $images)
+    {
+        collect($images)
+            ->reject(function ($result) {
+                return $result['#text'] == '' ||
+                    $result['size'] == 'mega' ||
+                    $result['size'] == '';
+            })
+            ->each(function ($result) use ($artist) {
+                $image = $this->provider->images()->updateOrCreate([
+                    'type' => $this->sizes[$result['size']],
+                    'path' => $result['#text'],
+                ]);
+
+                $artist->images()->syncWithoutDetaching($image);
+            });
     }
 }

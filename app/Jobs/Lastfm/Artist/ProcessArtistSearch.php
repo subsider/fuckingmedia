@@ -51,10 +51,13 @@ class ProcessArtistSearch implements ShouldQueue
             collect($results['results']['artistmatches']['artist'])
                 ->each(function($result) use ($artistRepository) {
                     $artist = $artistRepository->create($result, [
-                        'listeners' => $result['listeners']
+                        'listeners' => $result['listeners'],
+                        'streamable' => !! $result['streamable'],
                     ]);
+                    dump($artist->name);
 
-                    $artistRepository->addService($artist, $result);
+                    $artistRepository->addService($artist, $result)
+                        ->addImages($artist, $result['image']);
                 });
 
             $page++;

@@ -5,6 +5,7 @@ namespace App\Models;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Spatie\SchemalessAttributes\SchemalessAttributes;
 
 /**
@@ -42,6 +43,7 @@ class Artist extends BaseModel
     public $casts = [
         'listeners' => 'array',
         'playcount' => 'array',
+        'streamable' => 'array',
     ];
 
     public function getListenersAttribute(): SchemalessAttributes
@@ -64,6 +66,16 @@ class Artist extends BaseModel
         return SchemalessAttributes::scopeWithSchemalessAttributes('playcount');
     }
 
+    public function getStreamableAttribute(): SchemalessAttributes
+    {
+        return SchemalessAttributes::createForModel($this, 'streamable');
+    }
+
+    public function scopeWithStreamable(): Builder
+    {
+        return SchemalessAttributes::scopeWithSchemalessAttributes('streamable');
+    }
+
     public function sluggable(): array
     {
         return ['slug' => ['source' => 'name']];
@@ -72,5 +84,10 @@ class Artist extends BaseModel
     public function services(): MorphMany
     {
         return $this->morphMany(Service::class, 'model');
+    }
+
+    public function images(): MorphToMany
+    {
+        return $this->morphToMany(Image::class, 'imageable');
     }
 }

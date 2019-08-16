@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Spatie\SchemalessAttributes\SchemalessAttributes;
@@ -79,6 +80,18 @@ class Artist extends BaseModel
     public function sluggable(): array
     {
         return ['slug' => ['source' => 'name']];
+    }
+
+    public function albums(): BelongsToMany
+    {
+        return $this->belongsToMany(Album::class);
+    }
+
+    public function tracks(): BelongsToMany
+    {
+        return $this->belongsToMany(Track::class)
+            ->withPivot('rank')
+            ->using(ArtistTrack::class);
     }
 
     public function services(): MorphMany

@@ -2,17 +2,17 @@
 
 namespace App\Console\Commands\Lastfm\Artist;
 
-use App\Jobs\Lastfm\Artist\ProcessArtistInfo;
+use App\Jobs\Lastfm\Artist\ProcessArtistTags;
 use Illuminate\Console\Command;
 
-class ArtistInfoCommand extends Command
+class ArtistTagsCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'lastfm:artist:info {artist} {lang?}';
+    protected $signature = 'lastfm:artist:tags {artist}';
 
     /**
      * The console command description.
@@ -38,9 +38,6 @@ class ArtistInfoCommand extends Command
      */
     public function handle()
     {
-        ProcessArtistInfo::dispatch(
-            $this->argument('artist'),
-            $this->argument('lang') ?? app()->getLocale()
-        );
+        ProcessArtistTags::dispatch($this->argument('artist'));
     }
 }

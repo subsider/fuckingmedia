@@ -18,6 +18,7 @@ class CreateTaggablesTable extends Migration
             $table->unsignedBigInteger('tag_id');
             $table->morphs('taggable');
             $table->schemalessAttributes('url');
+            $table->schemalessAttributes('match');
             $table->timestamps();
 
             $table->foreign('tag_id')

@@ -13,6 +13,7 @@ class Taggable extends BaseModel
 
     public $casts = [
         'url' => 'array',
+        'match' => 'array',
     ];
 
     public function getUrlAttribute(): SchemalessAttributes
@@ -23,5 +24,15 @@ class Taggable extends BaseModel
     public function scopeWithUrl(): Builder
     {
         return SchemalessAttributes::scopeWithSchemalessAttributes('url');
+    }
+
+    public function getMatchAttribute(): SchemalessAttributes
+    {
+        return SchemalessAttributes::createForModel($this, 'match');
+    }
+
+    public function scopeWithMatch(): Builder
+    {
+        return SchemalessAttributes::scopeWithSchemalessAttributes('match');
     }
 }

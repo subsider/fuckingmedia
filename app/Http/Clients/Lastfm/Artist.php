@@ -37,4 +37,44 @@ class Artist
 
         return $this->client;
     }
+
+    public function albums(string $artistName)
+    {
+        $this->client->query = array_merge($this->client->query, [
+            'method' => 'artist.gettopalbums',
+            'artist' => $artistName,
+        ]);
+
+        return $this->client;
+    }
+
+    public function tracks(string $artistName)
+    {
+        $this->client->query = array_merge($this->client->query, [
+            'method' => 'artist.gettoptracks',
+            'artist' => $artistName,
+        ]);
+
+        return $this->client;
+    }
+
+    public function related(string $artistName)
+    {
+        $this->client->query = array_merge($this->client->query, [
+            'method' => 'artist.getsimilar',
+            'artist' => $artistName,
+        ]);
+
+        return $this->client;
+    }
+
+    public function tags(string $artistName)
+    {
+        $this->client->query = array_merge($this->client->query, [
+            'method' => 'artist.gettoptags',
+            'artist' => $artistName,
+        ]);
+
+        return $this->client;
+    }
 }

@@ -53,6 +53,7 @@ class ProcessArtistInfo implements ShouldQueue
             'playcount' => $result['stats']['playcount'],
             'streamable' => !! $result['streamable'],
         ]);
+
         $artistRepository->addService($artist, $result)
             ->addImages($artist, $result['image'])
             ->addRelatedCollection($artist, $result['similar']['artist'])

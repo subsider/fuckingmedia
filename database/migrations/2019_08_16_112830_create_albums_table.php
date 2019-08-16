@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRelatedTable extends Migration
+class CreateAlbumsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateRelatedTable extends Migration
      */
     public function up()
     {
-        Schema::create('related', function (Blueprint $table) {
+        Schema::create('albums', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->morphs('source');
-            $table->morphs('related');
-            $table->schemalessAttributes('match');
+            $table->uuid('mbid')->nullable();
+            $table->string('name')->index();
+            $table->string('artist_name')->index();
+            $table->string('slug')->nullable();
+            $table->schemalessAttributes('listeners');
+            $table->schemalessAttributes('playcount');
             $table->timestamps();
-
-            $table->unique(['source_id', 'source_type', 'related_id', 'related_type']);
         });
     }
 
@@ -31,6 +32,6 @@ class CreateRelatedTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('related');
+        Schema::dropIfExists('albums');
     }
 }

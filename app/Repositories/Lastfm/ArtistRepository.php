@@ -52,7 +52,7 @@ class ArtistRepository
         }
 
         collect($overrides)->each(function ($override, $key) use ($artist) {
-            $artist->$key = ['lastfm' => (int)$override];
+            $artist->$key = [$this->provider->name => (int)$override];
         });
 
         $artist->save();
@@ -98,6 +98,62 @@ class ArtistRepository
         return $this;
     }
 
+    public function addTrack(Artist $artist, array $attributes, array $overrides = [], int $rank = null)
+    {
+        $track = $artist->tracks()->firstOrNew([
+            'name' => $attributes['name'],
+            'artist_name' => $artist->name,
+        ]);
+
+        if (Arr::has($attributes, 'mbid') && $attributes['mbid'] != '') {
+            $track->mbid = $attributes['mbid'];
+        }
+
+        collect($overrides)->each(function ($override, $key) use ($track) {
+            $track->$key = [$this->provider->name => (int)$override];
+        });
+
+        $track->save();
+
+        if (! $rank) {
+            $artist->tracks()->syncWithoutDetaching($track);
+        } else {
+            try {
+                $artist->tracks()->save($track, [
+                    'rank' => [$this->provider->name => $rank],
+                ]);
+            } catch (\Exception $e) {
+                $artist->tracks()->updateExistingPivot($track, [
+                    'rank' => [$this->provider->name => $rank],
+                ]);
+            }
+        }
+
+
+        return $track;
+    }
+
+    public function addAlbum(Artist $artist, array $attributes)
+    {
+        $album = $artist->albums()->firstOrNew([
+            'name' => $attributes['name'],
+            'artist_name' => $artist->name,
+        ]);
+
+        if (Arr::has($attributes, 'mbid') && $attributes['mbid'] != '') {
+            $album->mbid = $attributes['mbid'];
+        }
+
+        if (Arr::has($attributes, 'playcount') && $attributes['playcount'] != '') {
+            $album->playcount = [$this->provider->name => (int)$attributes['playcount']];
+        }
+
+        $album->save();
+        $artist->albums()->syncWithoutDetaching($album);
+
+        return $album;
+    }
+
     public function addRelatedCollection(Artist $artist, array $results)
     {
         collect($results)->each(function ($result) use ($artist) {
@@ -119,14 +175,20 @@ class ArtistRepository
         return $relatedItem;
     }
 
-    public function relate(Model $source, Model $related)
+    public function relate(Model $source, Model $related, float $match = null)
     {
-        Related::updateOrCreate([
+        $related = Related::firstOrNew([
             'source_id' => $source->id,
             'source_type' => get_class($source),
             'related_id' => $related->id,
             'related_type' => get_class($related),
         ]);
+
+        if ($match) {
+            $related->match = [$this->provider->name => $match];
+        }
+
+        $related->save();
 
         return $this;
     }
@@ -140,7 +202,7 @@ class ArtistRepository
         return $this;
     }
 
-    public function addTag(Artist $artist, $result)
+    public function addTag(Artist $artist, $result, int $match = null)
     {
         $tag = Tag::firstOrNew([
             'type' => 'tag',
@@ -156,6 +218,10 @@ class ArtistRepository
             'taggable_id' => $artist->id,
             'taggable_type' => get_class($artist),
         ]);
+
+        if ($match) {
+            $taggable->match = [$this->provider->name => (int) $result['count']];
+        }
 
         $taggable->url = [$this->provider->name => $result['url']];
 

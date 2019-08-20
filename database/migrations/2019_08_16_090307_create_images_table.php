@@ -17,7 +17,11 @@ class CreateImagesTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('provider_id');
             $table->string('type');
+            $table->string('resource_type')->nullable();
             $table->string('path')->unique();
+            $table->string('thumb_path')->nullable();
+            $table->unsignedInteger('width')->nullable();
+            $table->unsignedInteger('height')->nullable();
             $table->timestamps();
 
             $table->foreign('provider_id')

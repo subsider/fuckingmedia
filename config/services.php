@@ -48,4 +48,12 @@ return [
         'base_uri' => env('LASTFM_BASE_URI', 'http://ws.audioscrobbler.com/2.0/'),
         'api_key' => env('LASTFM_API_KEY'),
     ],
+
+    'discogs' => [
+        'base_uri' => env('DISCOGS_BASE_URI', 'https://api.discogs.com/'),
+        'web_uri' => 'https://discogs.com/',
+        'user_agent' => 'fucking-media/1.0.0 +https://github.com/subsider/fuckingmedia',
+        'api_key' => env('DISCOGS_API_KEY'),
+        'api_secret' => env('DISCOGS_API_SECRET'),
+    ],
 ];

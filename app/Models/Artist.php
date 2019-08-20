@@ -94,6 +94,17 @@ class Artist extends BaseModel
             ->using(ArtistTrack::class);
     }
 
+    public function members(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Artist::class,
+            'members',
+            'member_id'
+        )
+            ->withPivot('active')
+            ->withTimestamps();
+    }
+
     public function services(): MorphMany
     {
         return $this->morphMany(Service::class, 'model');
@@ -102,6 +113,21 @@ class Artist extends BaseModel
     public function bios(): MorphMany
     {
         return $this->morphMany(Bio::class, 'model');
+    }
+
+    public function urls(): MorphMany
+    {
+        return $this->morphMany(Url::class, 'model');
+    }
+
+    public function aliases(): MorphMany
+    {
+        return $this->morphMany(Alias::class, 'model');
+    }
+
+    public function nameVariations(): MorphMany
+    {
+        return $this->morphMany(NameVariation::class, 'model');
     }
 
     public function images(): MorphToMany

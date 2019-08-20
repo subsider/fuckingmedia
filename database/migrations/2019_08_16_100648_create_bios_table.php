@@ -18,7 +18,7 @@ class CreateBiosTable extends Migration
             $table->unsignedBigInteger('provider_id');
             $table->morphs('model');
             $table->json('summary');
-            $table->json('content');
+            $table->json('content')->nullable();
             $table->json('published_at')->nullable();
             $table->string('url')->nullable();
             $table->timestamps();

@@ -179,6 +179,7 @@ return [
          * My own Service Providers...
          */
         App\Providers\LastfmServiceProvider::class,
+        App\Providers\DiscogsServiceProvider::class,
 
     ],
 

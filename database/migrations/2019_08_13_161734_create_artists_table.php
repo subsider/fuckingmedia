@@ -16,7 +16,9 @@ class CreateArtistsTable extends Migration
         Schema::create('artists', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('mbid')->nullable();
+            $table->string('type')->nullable();
             $table->string('name')->index();
+            $table->string('real_name')->nullable();
             $table->string('slug')->nullable();
             $table->boolean('on_tour')->nullable();
             $table->schemalessAttributes('listeners');

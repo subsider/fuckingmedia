@@ -1,11 +1,10 @@
 <?php
 
-use App\Models\Provider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProvidersTable extends Migration
+class CreateNameVariationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,15 +13,12 @@ class CreateProvidersTable extends Migration
      */
     public function up()
     {
-        Schema::create('providers', function (Blueprint $table) {
+        Schema::create('name_variations', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name')->index();
-            $table->string('slug')->unique();
+            $table->morphs('model');
+            $table->string('name');
             $table->timestamps();
         });
-
-        Provider::create(['name' => 'Lastfm']);
-        Provider::create(['name' => 'Discogs']);
     }
 
     /**
@@ -32,6 +28,6 @@ class CreateProvidersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('providers');
+        Schema::dropIfExists('name_variations');
     }
 }

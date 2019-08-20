@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 class DiscogsClient
 {
     const MAX_PAGE = 4;
+    const MAX_LIMIT = 100;
 
     /**
      * @var Client
@@ -53,6 +54,10 @@ class DiscogsClient
 
     public function limit(int $limit)
     {
+        if ($limit > self::MAX_LIMIT) {
+            $limit = self::MAX_LIMIT;
+        }
+
         $this->query = array_merge($this->query, [
             'per_page' => $limit,
         ]);

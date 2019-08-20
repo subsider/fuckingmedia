@@ -55,7 +55,8 @@ class ProcessArtistRelated implements ShouldQueue
 
                 $artistRepository->addService($relatedArtist, $result)
                     ->addImages($relatedArtist, $result['image'])
-                    ->relate($artist, $relatedArtist, (float) $result['match']);
+                    ->relate($artist, $relatedArtist, (float) $result['match'])
+                    ->relate($relatedArtist, $artist, (float) $result['match']);
             });
     }
 }

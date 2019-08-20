@@ -18,6 +18,8 @@ class CreateTagsTable extends Migration
             $table->string('type');
             $table->string('name')->index();
             $table->string('slug')->unique();
+            $table->schemalessAttributes('listeners');
+            $table->schemalessAttributes('playcount');
             $table->timestamps();
         });
     }

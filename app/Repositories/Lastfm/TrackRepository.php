@@ -2,10 +2,17 @@
 
 namespace App\Repositories\Lastfm;
 
+use App\Models\Artist;
+use App\Models\Bio;
 use App\Models\Provider;
+use App\Models\Related;
 use App\Models\Service;
+use App\Models\Tag;
+use App\Models\Taggable;
 use App\Models\Track;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class TrackRepository
 {
@@ -67,6 +74,101 @@ class TrackRepository
 
                 $track->images()->syncWithoutDetaching($image);
             });
+
+        return $this;
+    }
+
+    public function addTags(Track $track, array $results)
+    {
+        collect($results)->each(function ($result) use ($track) {
+            $this->addTag($track, $result);
+        });
+
+        return $this;
+    }
+
+    public function addTag(Track $track, $result, int $match = null)
+    {
+        $tag = Tag::firstOrNew([
+            'type' => 'tag',
+            'slug' => Str::slug($result['name']),
+        ], [
+            'name' => $result['name'],
+        ]);
+
+        $tag->save();
+
+        $taggable = Taggable::firstOrNew([
+            'tag_id' => $tag->id,
+            'taggable_id' => $track->id,
+            'taggable_type' => get_class($track),
+        ]);
+
+        if ($match) {
+            $taggable->match = [$this->provider->name => (int) $result['count']];
+        }
+
+        $taggable->url = [$this->provider->name => $result['url']];
+
+        $taggable->save();
+
+        return $this;
+    }
+
+    public function addBio(Track $track, array $attributes, string $lang = 'en', array $overrides = [])
+    {
+        if ($attributes) {
+            $bio = Bio::firstOrNew([
+                'provider_id' => $this->provider->id,
+                'model_id' => $track->id,
+                'model_type' => get_class($track),
+            ], $overrides);
+
+            $bio->setTranslation('summary', $lang, $attributes['summary']);
+            $bio->setTranslation('content', $lang, $attributes['content']);
+            $bio->setTranslation('published_at', $lang, $attributes['published']);
+
+            $bio->save();
+        }
+
+        return $this;
+    }
+
+    public function addRelatedCollection(Track $track, array $results)
+    {
+        collect($results)->each(function ($result) use ($track) {
+            $this->addRelatedItem($track, $result);
+        });
+
+        return $this;
+    }
+
+    public function addRelatedItem(Track $track, $result)
+    {
+        $relatedItem = $this->create($result);
+        $this->addService($relatedItem, $result)
+            ->addImages($relatedItem, $result['image']);
+
+        $this->relate($track, $relatedItem);
+        $this->relate($relatedItem, $track);
+
+        return $relatedItem;
+    }
+
+    public function relate(Model $source, Model $related, float $match = null)
+    {
+        $related = Related::firstOrNew([
+            'source_id' => $source->id,
+            'source_type' => get_class($source),
+            'related_id' => $related->id,
+            'related_type' => get_class($related),
+        ]);
+
+        if ($match) {
+            $related->match = [$this->provider->name => $match];
+        }
+
+        $related->save();
 
         return $this;
     }

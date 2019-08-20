@@ -72,7 +72,10 @@ class ArtistRepository
             $service->internal_id = $attributes['mbid'];
         }
 
-        $service->web_url = $attributes['url'];
+        if (Arr::has($attributes, 'url') && $attributes['url'] != '') {
+            $service->web_url = $attributes['url'];
+        }
+
         $service->save();
 
         return $this;
@@ -129,7 +132,6 @@ class ArtistRepository
             }
         }
 
-
         return $track;
     }
 
@@ -146,6 +148,10 @@ class ArtistRepository
 
         if (Arr::has($attributes, 'playcount') && $attributes['playcount'] != '') {
             $album->playcount = [$this->provider->name => (int)$attributes['playcount']];
+        }
+
+        if (Arr::has($attributes, 'streamable') && $attributes['streamable'] != '') {
+            $album->streamable = [$this->provider->name => (int)$attributes['streamable']];
         }
 
         $album->save();

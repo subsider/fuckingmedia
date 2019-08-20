@@ -19,7 +19,7 @@ class CreateBiosTable extends Migration
             $table->morphs('model');
             $table->json('summary');
             $table->json('content');
-            $table->json('published_at');
+            $table->json('published_at')->nullable();
             $table->string('url')->nullable();
             $table->timestamps();
 

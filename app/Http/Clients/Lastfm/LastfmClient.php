@@ -41,6 +41,21 @@ class LastfmClient
         return new Artist($this);
     }
 
+    public function album()
+    {
+        return new Album($this);
+    }
+
+    public function track()
+    {
+        return new Track($this);
+    }
+
+    public function tag()
+    {
+        return new Tag($this);
+    }
+
     public function limit(int $limit)
     {
         if ($limit > self::MAX_LIMIT) {
@@ -54,10 +69,10 @@ class LastfmClient
         return $this;
     }
 
-    public function page(int $limit)
+    public function page(int $page)
     {
         $this->query = array_merge($this->query, [
-            'limit' => $limit,
+            'page' => $page,
         ]);
 
         return $this;

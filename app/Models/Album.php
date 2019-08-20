@@ -16,6 +16,7 @@ class Album extends BaseModel
     public $casts = [
         'listeners' => 'array',
         'playcount' => 'array',
+        'streamable' => 'array',
     ];
 
     public function getListenersAttribute(): SchemalessAttributes
@@ -38,6 +39,16 @@ class Album extends BaseModel
         return SchemalessAttributes::scopeWithSchemalessAttributes('playcount');
     }
 
+    public function getStreamableAttribute(): SchemalessAttributes
+    {
+        return SchemalessAttributes::createForModel($this, 'streamable');
+    }
+
+    public function scopeWithStreamable(): Builder
+    {
+        return SchemalessAttributes::scopeWithSchemalessAttributes('streamable');
+    }
+
     public function sluggable(): array
     {
         return ['slug' => ['source' => ['artist_name', 'name']]];
@@ -46,6 +57,12 @@ class Album extends BaseModel
     public function artists(): BelongsToMany
     {
         return $this->belongsToMany(Artist::class);
+    }
+
+    public function tracks(): BelongsToMany
+    {
+        return $this->belongsToMany(Track::class)
+            ->withPivot('position', 'duration');
     }
 
     public function services(): MorphMany

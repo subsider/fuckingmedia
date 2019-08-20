@@ -21,6 +21,7 @@ class CreateAlbumsTable extends Migration
             $table->string('slug')->nullable();
             $table->schemalessAttributes('listeners');
             $table->schemalessAttributes('playcount');
+            $table->schemalessAttributes('streamable');
             $table->timestamps();
         });
     }

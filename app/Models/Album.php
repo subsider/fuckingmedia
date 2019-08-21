@@ -5,6 +5,7 @@ namespace App\Models;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Spatie\SchemalessAttributes\SchemalessAttributes;
@@ -62,7 +63,7 @@ class Album extends BaseModel
     public function tracks(): BelongsToMany
     {
         return $this->belongsToMany(Track::class)
-            ->withPivot('position', 'duration');
+            ->withPivot('position', 'duration', 'track_artist_id');
     }
 
     public function services(): MorphMany
@@ -84,5 +85,10 @@ class Album extends BaseModel
     {
         return $this->morphToMany(Tag::class, 'taggable')
             ->withPivot('url');
+    }
+
+    public function formats(): HasMany
+    {
+        return $this->hasMany(AlbumFormat::class, 'album_id');
     }
 }

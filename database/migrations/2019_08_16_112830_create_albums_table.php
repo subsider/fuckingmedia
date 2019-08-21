@@ -16,9 +16,12 @@ class CreateAlbumsTable extends Migration
         Schema::create('albums', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('mbid')->nullable();
+            $table->string('type')->nullable();
+            $table->string('release_type')->nullable();
             $table->string('name')->index();
             $table->string('artist_name')->index();
             $table->string('slug')->nullable();
+            $table->unsignedSmallInteger('year')->nullable();
             $table->schemalessAttributes('listeners');
             $table->schemalessAttributes('playcount');
             $table->schemalessAttributes('streamable');

@@ -36,4 +36,11 @@ class Artist
 
         return $this->client;
     }
+
+    public function albums(string $id)
+    {
+        $this->client->url = "artists/{$id}/releases";
+
+        return $this->client;
+    }
 }

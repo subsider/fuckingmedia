@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTracksTable extends Migration
+class CreateCompaniesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,10 @@ class CreateTracksTable extends Migration
      */
     public function up()
     {
-        Schema::create('tracks', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->uuid('mbid')->nullable();
             $table->string('name')->index();
             $table->string('slug')->unique();
-            $table->string('artist_name')->index();
-            $table->schemalessAttributes('listeners');
-            $table->schemalessAttributes('playcount');
-            $table->schemalessAttributes('streamable');
             $table->timestamps();
         });
     }
@@ -33,6 +28,6 @@ class CreateTracksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tracks');
+        Schema::dropIfExists('companies');
     }
 }

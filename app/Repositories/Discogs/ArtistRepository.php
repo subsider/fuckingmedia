@@ -2,17 +2,20 @@
 
 namespace App\Repositories\Discogs;
 
+use App\Models\Album;
 use App\Models\Artist;
 use App\Models\Bio;
+use App\Models\Collaboration;
 use App\Models\Image;
 use App\Models\Provider;
+use App\Models\Track;
 
 class ArtistRepository
 {
     /**
      * @var Provider
      */
-    private $provider;
+    public $provider;
 
     /**
      * ArtistRepository constructor.
@@ -52,12 +55,36 @@ class ArtistRepository
         ]);
 
         if (isset($result['uri'])) {
-            $service->web_url = config('services.discogs.web_uri') . $result['uri'];
+            $service->web_url = $result['uri'];
         }
 
         $service->save();
 
         return $this;
+    }
+
+    public function addAlbum(Artist $albumArtist, $result)
+    {
+        $album = $albumArtist->albums()
+            ->where('name', $result['title'])
+            ->where('artist_name', $albumArtist->name)
+            ->first();
+
+        if (!$album) {
+            $album = new Album([
+                'name' => $result['title'],
+                'artist_name' => $albumArtist->name,
+            ]);
+        }
+
+        $album->release_type = $result['type'];
+        $album->year = $result['year'];
+
+        $album->save();
+
+        $albumArtist->albums()->syncWithoutDetaching($album);
+
+        return $album;
     }
 
     public function addImages($artist, $result)

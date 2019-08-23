@@ -9,6 +9,9 @@ use App\Models\Companiable;
 use App\Models\Company;
 use App\Models\Image;
 use App\Models\Provider;
+use App\Models\Tag;
+use App\Models\Taggable;
+use Illuminate\Support\Str;
 
 class AlbumRepository
 {
@@ -38,11 +41,15 @@ class AlbumRepository
         return $this;
     }
 
-    public function addImage(Album $album, $result, $type)
+    public function addImage(Album $album, $result, $type, $alias = null)
     {
+        if ($alias == null) {
+            $alias = $type;
+        }
+
         if ($result[$type] != '') {
             $image = Image::updateOrCreate([
-                'type' => $type,
+                'type' => $alias,
                 'provider_id' => $this->provider->id,
                 'path' => $result[$type],
             ]);
@@ -80,6 +87,8 @@ class AlbumRepository
             } catch (\Exception $e) {
                 $album->tracks()->updateExistingPivot($track, ['track_artist_id' => $artist->id]);
             }
+
+            $artist->tracks()->syncWithoutDetaching($track);
         }
 
         return $this;
@@ -88,7 +97,9 @@ class AlbumRepository
     public function addFormats(Album $album, $result)
     {
         if (isset($result['format'])) {
-            $formats = explode(', ', $result['format']);
+            $formats = is_array($result['format'])
+                ? $result['format']
+                : explode(', ', $result['format']);
 
             collect($formats)->each(function ($format) use ($album) {
                 $album->formats()->updateOrCreate([
@@ -100,22 +111,101 @@ class AlbumRepository
         return $this;
     }
 
-    public function addLabel(Album $album, $result)
+    public function addLabels(Album $album, $result, $overrides = [])
+    {
+        if (isset($result['label'])) {
+            $this->collectAndSyncLabels($album, $result['label'], $overrides);
+        }
+
+        return $this;
+    }
+
+    public function addLabel(Album $album, $result, array $overrides = [])
     {
         if (isset($result['label'])) {
             $labels = explode(', ', $result['label']);
 
-            collect($labels)->each(function ($labelName) use ($album) {
-                $label = Company::firstOrCreate([
-                    'name' => $labelName,
-                ]);
+            $this->collectAndSyncLabels($album, $labels, $overrides);
+        }
 
-                Companiable::updateOrCreate([
-                    'company_id' => $label->id,
-                    'companiable_id' => $album->id,
-                    'companiable_type' => get_class($album),
-                    'role' => 'label',
-                ]);
+        return $this;
+    }
+
+    public function collectAndSyncLabels(Album $album, $labels, $overrides)
+    {
+        collect($labels)->each(function ($labelName) use ($album, $overrides) {
+            $label = Company::firstOrCreate([
+                'name' => $labelName,
+            ]);
+
+            $this->syncLabel($album, $label);
+        });
+
+        return $this;
+    }
+
+    public function syncLabel($album, $label)
+    {
+        $companiable = Companiable::firstOrNew([
+            'company_id' => $label->id,
+            'companiable_id' => $album->id,
+            'companiable_type' => get_class($album),
+            'role' => 'label',
+        ]);
+
+        $companiable->save();
+
+        return $this;
+    }
+
+    public function addStyles(Album $album, array $results)
+    {
+        return $this->addTags($album, $results, 'style');
+    }
+
+    public function addGenres(Album $album, array $results)
+    {
+        return $this->addTags($album, $results, 'genre');
+    }
+
+    public function addTags(Album $album, array $results, $type = 'tag')
+    {
+        if (isset($results[$type])) {
+            collect($results[$type])->each(function ($result) use ($album, $type) {
+                $this->addTag($album, $result, $type);
+            });
+
+            return $this;
+        }
+    }
+
+    public function addTag(Album $album, $result, $type = 'tag')
+    {
+        $tag = Tag::firstOrNew([
+            'type' => $type,
+            'slug' => Str::slug($result),
+        ], [
+            'name' => $result,
+        ]);
+
+        $tag->save();
+
+        $taggable = Taggable::firstOrNew([
+            'tag_id' => $tag->id,
+            'taggable_id' => $album->id,
+            'taggable_type' => get_class($album),
+        ]);
+
+        $taggable->save();
+
+        return $this;
+    }
+
+    public function addBarcodes(Album $album, $result)
+    {
+        if ($result['barcode']) {
+            collect($result['barcode'])->each(function ($code) use ($album) {
+                $album->barcodes()->updateOrCreate(['code' => $code]);
             });
         }
 

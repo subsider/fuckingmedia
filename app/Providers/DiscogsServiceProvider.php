@@ -6,6 +6,7 @@ use App\Http\Clients\Discogs\DiscogsClient;
 use App\Models\Provider;
 use App\Repositories\Discogs\AlbumRepository;
 use App\Repositories\Discogs\ArtistRepository;
+use App\Repositories\Discogs\LabelRepository;
 use GuzzleHttp\Client;
 use Illuminate\Support\ServiceProvider;
 
@@ -51,6 +52,14 @@ class DiscogsServiceProvider extends ServiceProvider
 
         $this->app->bind(AlbumRepository::class, function () {
             return new AlbumRepository(
+                cache()->rememberForever('providers.discogs', function () {
+                    return Provider::where('name', 'Discogs')->first();
+                })
+            );
+        });
+
+        $this->app->bind(LabelRepository::class, function () {
+            return new LabelRepository(
                 cache()->rememberForever('providers.discogs', function () {
                     return Provider::where('name', 'Discogs')->first();
                 })

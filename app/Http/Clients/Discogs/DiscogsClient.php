@@ -52,6 +52,16 @@ class DiscogsClient
         return new Artist($this);
     }
 
+    public function album()
+    {
+        return new Album($this);
+    }
+
+    public function label()
+    {
+        return new Label($this);
+    }
+
     public function limit(int $limit)
     {
         if ($limit > self::MAX_LIMIT) {

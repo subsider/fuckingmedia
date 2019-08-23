@@ -71,6 +71,11 @@ class Album extends BaseModel
         return $this->morphMany(Service::class, 'model');
     }
 
+    public function barcodes(): MorphMany
+    {
+        return $this->morphMany(Barcode::class, 'model');
+    }
+
     public function bios(): MorphMany
     {
         return $this->morphMany(Bio::class, 'model');

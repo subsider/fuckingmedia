@@ -5,10 +5,8 @@ namespace App\Repositories\Discogs;
 use App\Models\Album;
 use App\Models\Artist;
 use App\Models\Bio;
-use App\Models\Collaboration;
 use App\Models\Image;
 use App\Models\Provider;
-use App\Models\Track;
 
 class ArtistRepository
 {
@@ -67,18 +65,35 @@ class ArtistRepository
     {
         $album = $albumArtist->albums()
             ->where('name', $result['title'])
+            ->where('release_type', $result['type'])
             ->where('artist_name', $albumArtist->name)
+            ->where('discogs_id', $result['id'])
             ->first();
 
         if (!$album) {
             $album = new Album([
                 'name' => $result['title'],
                 'artist_name' => $albumArtist->name,
+                'release_type' => $result['type'],
+                'discogs_id' => $result['id'],
             ]);
         }
 
-        $album->release_type = $result['type'];
-        $album->year = $result['year'];
+        if (isset($result['year'])) {
+            $album->year = $result['year'];
+        }
+
+        if (isset($result['catno'])) {
+            $album->catalog_number = $result['catno'];
+        }
+
+        if (isset($result['format_quantity'])) {
+            $album->format_quantity = $result['format_quantity'];
+        }
+
+        if (isset($result['master_id'])) {
+            $album->discogs_master_id = $result['master_id'];
+        }
 
         $album->save();
 

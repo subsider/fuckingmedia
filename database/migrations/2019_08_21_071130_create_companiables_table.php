@@ -19,6 +19,7 @@ class CreateCompaniablesTable extends Migration
             $table->morphs('companiable');
             $table->string('role');
             $table->timestamps();
+            $table->schemalessAttributes('extra_attributes');
 
             $table->unique(['company_id', 'companiable_id', 'companiable_type', 'role'], 'companiable_unique');
         });

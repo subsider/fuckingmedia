@@ -1,55 +1,55 @@
 <?php
 
-namespace App\Jobs\Discogs\Artist;
+namespace App\Jobs\Discogs\Label;
 
 use App\Http\Clients\Discogs\DiscogsClient;
-use App\Repositories\Discogs\ArtistRepository;
+use App\Repositories\Discogs\LabelRepository;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class ProcessArtistSearch implements ShouldQueue
+class ProcessLabelSearch implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     /**
      * @var string
      */
-    private $artistName;
+    private $labelName;
 
     /**
      * Create a new job instance.
      *
-     * @param string $artistName
+     * @param string $labelName
      */
-    public function __construct(string $artistName)
+    public function __construct(string $labelName)
     {
-        $this->artistName = $artistName;
+        $this->labelName = $labelName;
     }
 
     /**
      * @param DiscogsClient $client
-     * @param ArtistRepository $artistRepository
+     * @param LabelRepository $labelRepository
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function handle(DiscogsClient $client, ArtistRepository $artistRepository)
+    public function handle(DiscogsClient $client, LabelRepository $labelRepository)
     {
         $page = 1;
 
         do {
             $results = $client->artist()
-                ->search($this->artistName)
-                ->limit(100)
+                ->search($this->labelName)
+                ->limit(50)
                 ->page($page)
                 ->get();
 
 
             dump("Page {$page}");
-            collect($results['results'])->each(function ($result) use ($artistRepository) {
-                $artist = $artistRepository->create($result);
-                $artistRepository->addService($artist, $result)
-                    ->addImages($artist, $result);
+            collect($results['results'])->each(function ($result) use ($labelRepository) {
+                $label = $labelRepository->create($result);
+                $labelRepository->addService($label, $result)
+                    ->addImages($label, $result);
             });
 
             $page++;

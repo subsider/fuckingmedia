@@ -41,6 +41,7 @@ class ProcessArtistAlbums implements ShouldQueue
     {
         $service = Service::where('internal_id', $this->id)
             ->where('provider_id', $artistRepository->provider->id)
+            ->where('model_type', 'App\Models\Artist')
             ->first();
 
         if (!$service) return;
@@ -62,16 +63,6 @@ class ProcessArtistAlbums implements ShouldQueue
                 ->addCollaboration($artist, $albumArtist, $album, $result)
                 ->addTrackInfo($artist, $album, $result)
                 ->addLabel($album, $result);
-
-            // add service
-            // add images
-            // add release type field
-            // collaborations
-            // album year
-            // various artist main artist
-            // labels
-            // album formats
-            // add collaborations
         });
     }
 }
